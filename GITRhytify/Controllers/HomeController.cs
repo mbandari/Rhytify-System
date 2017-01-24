@@ -10,7 +10,7 @@ namespace GITRhytify.Controllers
 {
     public class HomeController : Controller
     {
-       
+       // Comments added ;
 
 
         public ActionResult Index()
