@@ -1,0 +1,326 @@
+﻿<head>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</head>
+@using (Html.BeginForm("Index", "GIT", FormMethod.Post))
+{
+
+    <div class="row" id="loginHeader" style="display:block;background-color:wheat;">
+        <div class="col-md-4">
+            <div>
+                <h2>Connect To TFS</h2>
+                <p style="white-space:nowrap;" id="TxtMsg">Please enter the details to connect to TFS.</p>
+
+            </div>
+        </div>
+    </div>
+    <hr />
+    if (ViewBag.HasMessage == "true")
+    {
+        <div class="row" id="messageDiv" style="display:block">
+            <div class="alert alert-danger">
+                <div>
+                    <label id="lblMessage">@ViewBag.Message</label>
+                </div>
+            </div>
+        </div>
+    }
+    <div id="LoginForm">
+        <form class="form-horizontal">
+            <div class="form-group">           
+                <div class="row" id="serveraddressDiv" style="display:block">
+                    <div class="col-md-4">
+                        <div>
+                            <label class="col-sm-2 control-label" for="ServerAddress" style="white-space:nowrap;">Server Address</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text" id="ServerAddress" name="ServerAddress" value="@ViewBag.ServerAddress" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row" id="loginDiv" style="display:block">
+                    <div class="col-md-4">
+                        <div>
+                            <label class="col-sm-2 control-label" for="btnLogin"></label>
+                            <div>
+                                <input id="btnLogin" style="width:150px" type="submit" value="Login" class="btn btn-primary btnpadding" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <form class="form-horizontal" id="SourceControlForm">
+        <div class="form-group">
+            <div class="row" id="domainnameDiv" style="display:block">
+                <div class="col-md-4">
+                    <div>
+                        <label class="col-sm-2 control-label" for="domainname" style="white-space:nowrap;">Domain Name</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control text" id="domainname" name="domainname" value="@ViewBag.DomainName" disabled="disabled" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row" id="serveraddressDiv" style="display:block">
+                <div class="col-md-4">
+                    <div>
+                        <label class="col-sm-2 control-label" for="serveraddress" style="white-space:nowrap;">Server Address</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control text" id="serveraddress" name="serveraddress" value="@ViewBag.ServerAddress" disabled="disabled" />
+                        </div>
+                    </div>
+                    <label style="margin-left:12px;"><input type="checkbox" name="checkbox" id="loadchanges">Load With Change Analysis</label>
+                </div>
+            </div>
+            <br />
+            <div class="row" id="teamCollectionsDiv" style="display:block">
+                <div class="col-md-4">
+                    <div>
+                        <label class="col-sm-2 control-label" for="teamCollections" style="white-space:nowrap;">Team Collections</label>
+                        <div class="col-sm-6">
+                            @Html.DropDownList("TeamCollections", new SelectList(((List<SelectListItem>)ViewBag.TeamCollections).Select(d => new SelectListItem { Text = d.Text, Value = d.Value }), "Value", "Text"), "Select One", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <label class="labels-normal" style="margin-left:-250px;" id="lblMessageTeamCollections">Please Select one Collection to load Projects</label>
+            </div>
+            <br />
+            <div class="row" id="teamProjectsDiv" style="display:block">
+                <div class="col-md-4">
+                    <div>
+                        <label class="col-sm-2 control-label" for="teamProjects" style="white-space:nowrap;">Team Projects</label>
+                        <div class="col-sm-6">
+                            @Html.DropDownList("TeamProjects", new SelectList(((List<SelectListItem>)ViewBag.TeamProjects).Select(d => new SelectListItem { Text = d.Text, Value = d.Value }), "Value", "Text"), " ", new { @class = "form-control", disabled = "disabled" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row" id="FromDateDiv" style="display:block">
+                <div class="col-md-4">
+                    <div>
+                        <label class="col-sm-2 control-label" for="FromDate" style="white-space:nowrap;">From Date</label>
+                        <div class="col-sm-6">
+                            @Html.TextBox("FromDate", string.Empty, new { @class = "datepicker" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row" id="ToDateDiv" style="display:block">
+                <div class="col-md-4">
+                    <div>
+                        <label class="col-sm-2 control-label" for="ToDate" style="white-space:nowrap;">To Date</label>
+                        <div class="col-sm-6">
+                            @Html.TextBox("ToDate", string.Empty, new { @class = "datepicker" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row" id="executionNameDiv" style="display:block">
+                <div class="col-md-4">
+                    <div>
+                        <label class="col-sm-2 control-label" for="executionName" style="white-space:nowrap;">Execution Name</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control text" id="executionName" name="executionName" />
+                        </div>
+                    </div>
+                    <input id="btnConnect" style="width:150px;margin-left:12px;" type="submit" value="Get Changes" class="btn btn-primary btnpadding" title="Connect to get Changes in the selected interval." />
+                </div>
+                <label class="labels-normal" style="width:150px;margin-left:-50px;color:green;white-space:nowrap;" id="lblMessageConnect"></label>
+                <img id="connectprogress" style="display:none;margin-left:110px;" height="60px" width="60px" src="~/Images/loader.gif" />
+                <a id="testcaseLink" href="@Url.Action("TestCases", "TestManagement",new { executionName = "xxxx" })" class="elements">
+                    <span style="font-size: large;">View Results</span>
+                </a>
+                <input id="btnConnect" style="width:150px;margin-left:60px;" type="submit" value="Save Changes" class="btn btn-primary btnpadding" />
+                <img id="connectprogress" style="display:none;margin-left:170px;" height="60px" width="60px" src="~/Images/loader.gif" />
+            </div>
+            <br />
+            <div class="row" id="localFolderPathDiv" style="display:block">
+                <div class="col-md-4">
+                    <div>
+                        <label class="col-sm-2 control-label" for="localFolderPath" style="white-space:nowrap;">Local Folder Path</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control text" id="localFolderPath" name="localFolderPath" value="D:\Rhytify\Input\FullSourceCode" disabled="disabled" />
+                        </div>
+                    </div>
+                    @*<input id="btnBrowse" style="width:150px;margin-left:12px;" type="submit" value="Browse" class="btn btn-primary btnpadding" />*@
+                    <input id="btnDownload" style="width:150px;margin-left:12px;" type="submit" value="Download" class="btn btn-primary btnpadding" />
+                </div>
+                <label class="labels-normal" style="width:150px;margin-left:-50px;color:green;white-space:nowrap;" id="lblMessageParse"></label>
+                <img id="downloadprogress" style="display:none;margin-left:110px;" height="60px" width="60px" src="~/Images/loader.gif" />
+            </div>
+            <br />
+            <div class="row" id="headingsDiv" style="display:block">
+                <div>
+                    <label class="col-sm-2 control-label" for="codeStructure" style="white-space:nowrap;">Code Structure</label>
+                    <label class="col-sm-2 control-label" for="changes" style="white-space:nowrap;margin-left:150px;">Changes(ID - CommittedDate)</label>
+                    <label class="col-sm-2 control-label" for="chnageDetails" style="white-space:nowrap;margin-left:250px;">Change Details</label>
+                </div>
+
+            </div>
+            <br />
+            <div class="input-group" id="textareas">
+                <div style="width:1500px;">
+                    <textarea class="form-control custom-control" rows="20" cols="30" style="resize:none"></textarea>
+                    <textarea class="form-control custom-control" rows="20" cols="30" style="resize:none;margin-left:200px;"></textarea>
+                    <textarea class="form-control custom-control" rows="20" cols="30" style="resize:none;margin-left:250px"></textarea>
+                </div>
+            </div>
+            <br />
+        </div>
+    </form>
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#messageDiv').show();
+        $('#headingsDiv').hide();
+        $('#textareas').hide();
+        $('#LoginForm').show();
+        $('#SourceControlForm').hide();
+        $('#testcaseLink').hide();
+
+    });
+
+    $('#btnLogin').click(function (){
+        debugger;
+        var dmname = $('#DomainName').val();
+        var seraddr = $('#ServerAddress').val();
+        if(dmname == "" && seraddr == "")
+            $('#messageDiv').show();
+        if(dmname == "")
+            $('#messageDiv').show();
+        if(seraddr == "")
+            $('#messageDiv').show();
+        if(dmname != "" && seraddr != "")
+        {
+            $('#LoginForm').hide();
+            $('#SourceControlForm').show();
+            $('#TxtMsg').html("Please select your details to get details.");
+        }
+        return false;
+
+    });
+
+    $(function () {
+        $(".datepicker").datepicker({
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true
+        });
+    });
+
+    $(function () {
+        $('#TeamCollections').change(function () {
+            debugger;
+            var test = @Html.Raw(Json.Encode(ViewBag.Teamprojects));
+            var teamCollectionValue = $('#TeamCollections option:selected').text();
+            if(teamCollectionValue == "Select One")
+            {
+                var items = '<option>Select Project</option>';
+                $('#TeamProjects').html(items);
+                $("#TeamProjects").prop("disabled", true);
+                $("#lblMessageTeamCollections").html("Please Select one Collection to load Projects");
+            }
+            else
+            {
+                var items = '<option>Select Project</option>';
+                $.each(test, function (i, project)
+                {
+                    if(project.Value == teamCollectionValue)
+                        items += "<option value='" + project.Value + "'>" + project.Text + "</option>";
+                });
+                $('#TeamProjects').html(items);
+                $("#lblMessageTeamCollections").html("");
+                $("#TeamProjects").prop("disabled", false);
+            }
+
+        });
+    });
+
+    $("#testcaseLink").click(function(evt) {
+        debugger;
+        var fakedUri = $("#testcaseLink").prop("href");
+        var uri = fakedUri.replace("xxxx", $("#executionName").val());
+        $("#testcaseLink").prop("href", uri);
+    });
+
+    $("#btnConnect").click(function () {
+
+        $('#connectprogress').show();
+        $('#lblMessageConnect').html('In Progress ...');
+        GetProjects();
+
+        return false;
+    });
+
+    $("#btnDownload").click(function () {
+
+        $('#downloadprogress').show();
+        $('#lblMessageParse').html('Downloading is in Progress ...');
+        DownloadFiles();
+
+        return false;
+    });
+
+    function GetProjects(){
+        debugger;
+        var username = $('#UserName').text();
+        var password = $('#PassWord').text();
+        var domainname = $('#domainname').val();
+        var serveraddress = $('#serveraddress').val();
+        var fromdate = $('#FromDate').val();
+        var todate = $('#ToDate').val();
+        var loadchanges = $('#loadchanges').is(":checked");
+        var executionName = $('#executionName').val();
+        $.ajax({
+            type: "POST",
+            url: "../TFS/ConnectToTFSToGetChanges?collectionname=" + $('#TeamCollections option:selected').text() + '&projectname=' + $('#TeamProjects option:selected').text() + '&domainname=' +
+                    domainname + '&serveraddress=' + serveraddress + '&fromdate=' + fromdate + '&todate=' + todate + '&loadChangesIsChecked=' + loadchanges + '&executionName=' + executionName,
+            success: function (data) {
+                debugger;
+                $('#testcaseLink').show();
+                $('#lblMessageConnect').html('Done');
+                $('#connectprogress').hide();
+
+            },
+            error: function () {
+                debugger;
+                //alert("Connecting to TFS Failed");
+            }
+        });
+
+        return false;
+    }
+
+    function DownloadFiles(){
+        var localPath = $('#localFolderPath').val();
+        var username = $('#UserName').text();
+        var password = $('#PassWord').text();
+        var domainname = $('#domainname').val();
+        var serveraddress = $('#serveraddress').val();
+        $.ajax({
+            type: "POST",
+            url: "../TFS/DownloadFullSource?localPath=" + localPath + '&domainname=' +
+                    domainname + '&serveraddress=' + serveraddress + '&collectionname=' + $('#TeamCollections option:selected').text() + '&projectname=' + $('#TeamProjects option:selected').text(),
+            success: function (data) {
+                debugger;
+                $('#LoginForm').hide();
+                $('#SourceControlForm').show();
+            },
+            error: function () {
+                debugger;
+                $('#LoginForm').show();
+                $('#SourceControlForm').hide();
+            }
+        });
+    }
+
+</script>
