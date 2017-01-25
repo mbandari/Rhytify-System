@@ -18,7 +18,8 @@ namespace ConsoleGIT
       
         static DateTime fromdt = DateTime.ParseExact(fromDate, "dd/MM/yyyy", null);
         static DateTime todt = DateTime.ParseExact(toDate, "dd/MM/yyyy", null);
-        public static string RepoPath = @"D:\GITSource\LibGit2Sharp7";
+        public static string RepoPath = @"D:\GITSource\LibGit2Sharp8";
+        public static Signature sig = new Signature("test", "mounika.bandari@valuelabs.com", new DateTimeOffset(2017, 01, 25, 00, 00, 00, TimeSpan.FromHours(2)));
 
         public static void Main(string[] args)
         {
@@ -28,39 +29,54 @@ namespace ConsoleGIT
                 string pwd = "Jjong@3107";
                 Credentials ca = new UsernamePasswordCredentials() { Username = un, Password = pwd };
                 co.CredentialsProvider = (_url, _user, _cred) => ca;
-                co.IsBare = true;
+            //co.IsBare = true;
             if (Directory.Exists(RepoPath))
             {
                 using (var repo = new Repository(RepoPath))
                 {
-                  //  foreach (Remote remote in repo.Network.Remotes)
-                   // {
-                        FetchOptions options = new FetchOptions();
-                        options.CredentialsProvider = new CredentialsHandler((url, usernameFromUrl, types) => new UsernamePasswordCredentials()
-                    {
-                        Username = un,
-                        Password = pwd
-                    });
-                        // repo.Network.Fetch(remote, options); 
-                       // repo.Fetch(remote.Name, options);
-                        repo.Fetch("origin", options);
+                    // Fetch
+                    //  foreach (Remote remote in repo.Network.Remotes)
+                    // {
+                    //    FetchOptions options = new FetchOptions();
+                    //   options.CredentialsProvider = new CredentialsHandler((url, usernameFromUrl, types) => new UsernamePasswordCredentials()
+                    //{
+                    //   Username = un,
+                    //  Password = pwd
+                    //});
+                    // repo.Network.Fetch(remote, options); 
+                    // repo.Fetch(remote.Name, options);
+                    //  repo.Fetch("origin", options);
                     //}
+
+                    // Pull
+                    repo.Network.Pull(sig, new PullOptions()
+                    {
+                        FetchOptions = new FetchOptions()
+                        {
+                            CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials
+                            {
+                                Username = un,
+                                Password = pwd,
+                            }
+                        },
+                        MergeOptions = new MergeOptions()
+                    });
                 }
             }
-            
-    
+            else
+            {
                 try
                 {
 
                     //https://github.com/mbandari/Rhytify-System.git
                     //https://github.com/photonstorm/phaser.git
-                    string Mainpath = Repository.Clone("https://github.com/mbandari/Rhytify-System.git", RepoPath, co);
+                      string Mainpath = Repository.Clone("https://github.com/mbandari/Rhytify-System.git", RepoPath, co);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Fail Clone GIT");
                 }
-            
+            }
             using (var Git = new Repository(RepoPath))
             {
                 // No of commits
