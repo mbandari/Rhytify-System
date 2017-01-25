@@ -29,6 +29,7 @@ namespace ConsoleGIT
                 string pwd = "Jjong@3107";
                 Credentials ca = new UsernamePasswordCredentials() { Username = un, Password = pwd };
                 co.CredentialsProvider = (_url, _user, _cred) => ca;
+            // Bare commented to do PULL operation.
             //co.IsBare = true;
             if (Directory.Exists(RepoPath))
             {
