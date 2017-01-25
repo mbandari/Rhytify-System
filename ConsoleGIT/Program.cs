@@ -20,54 +20,48 @@ namespace ConsoleGIT
         static DateTime todt = DateTime.ParseExact(toDate, "dd/MM/yyyy", null);
         public static string RepoPath = @"D:\GITSource\LibGit2Sharp7";
 
-       
-      
-
         public static void Main(string[] args)
         {
-            Console.Clear();
-            
-             //  var co = new CloneOptions();
+                Console.Clear();
                 CloneOptions co = new CloneOptions();
                 string un = "mbandari";
-                string pwd = "Jjong@310711";
+                string pwd = "Jjong@3107";
                 Credentials ca = new UsernamePasswordCredentials() { Username = un, Password = pwd };
                 co.CredentialsProvider = (_url, _user, _cred) => ca;
                 co.IsBare = true;
-               if (Directory.Exists(RepoPath))
-              {
-                using (var repo = new Repository(@"D:\GITSource\LibGit2Sharp7"))
+            if (Directory.Exists(RepoPath))
+            {
+                using (var repo = new Repository(RepoPath))
                 {
-                    foreach (Remote remote in repo.Network.Remotes)
-                    {
+                  //  foreach (Remote remote in repo.Network.Remotes)
+                   // {
                         FetchOptions options = new FetchOptions();
-                        options.CredentialsProvider = new CredentialsHandler(
-                                (url, usernameFromUrl, types) =>
-                    new UsernamePasswordCredentials()
+                        options.CredentialsProvider = new CredentialsHandler((url, usernameFromUrl, types) => new UsernamePasswordCredentials()
                     {
                         Username = un,
                         Password = pwd
                     });
-                        repo.Network.Fetch(remote, options);
-                    }
+                        // repo.Network.Fetch(remote, options); 
+                       // repo.Fetch(remote.Name, options);
+                        repo.Fetch("origin", options);
+                    //}
                 }
             }
+            
+    
+                try
+                {
 
-
-            try
-            {
-
-                //https://github.com/mbandari/Rhytify-System.git
-                //https://github.com/photonstorm/phaser.git
-                  string Mainpath =  Repository.Clone("https://github.com/mbandari/Rhytify-System.git", @"D:\GITSource\LibGit2Sharp7", co);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fail Clone GIT");
-
-               
-            }
-            using (var Git = new Repository(@"D:\GITSource\LibGit2Sharp7"))
+                    //https://github.com/mbandari/Rhytify-System.git
+                    //https://github.com/photonstorm/phaser.git
+                    string Mainpath = Repository.Clone("https://github.com/mbandari/Rhytify-System.git", RepoPath, co);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Fail Clone GIT");
+                }
+            
+            using (var Git = new Repository(RepoPath))
             {
                 // No of commits
                 foreach (var Commit in Git.Commits)
@@ -99,6 +93,21 @@ namespace ConsoleGIT
             
             Console.WriteLine("Success GIT");
           
+        }
+
+        public void DeleteContainsOfRepo(string RepoPath)
+        {
+            string[] subDir = Directory.GetDirectories(RepoPath);
+            string[] dirFiles = Directory.GetFiles(RepoPath);
+            foreach (string dir in subDir)
+            {
+                Directory.Delete(dir,true);
+            }
+            foreach (string file in dirFiles)
+            {
+                File.Delete(file);
+            }
+
         }
 
     }
