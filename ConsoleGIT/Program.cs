@@ -19,8 +19,8 @@ namespace ConsoleGIT
         static DateTime fromdt = DateTime.ParseExact(fromDate, "dd/MM/yyyy", null);
         static DateTime todt = DateTime.ParseExact(toDate, "dd/MM/yyyy", null);
         public static string RepoPath = @"D:\GITSource\LibGit2Sharp8";
-        public static Signature sig = new Signature("test", "mounika.bandari@valuelabs.com", new DateTimeOffset(2017, 01, 25, 00, 00, 00, TimeSpan.FromHours(2)));
-
+        public static Signature sig = new Signature("test", "mounika.bandari@valuelabs.com", new DateTimeOffset(DateTime.Now));
+         
         public static void Main(string[] args)
         {
                 Console.Clear();
@@ -80,6 +80,19 @@ namespace ConsoleGIT
             }
             using (var Git = new Repository(RepoPath))
             {
+
+                // Commit Filter time
+                var filter = new CommitFilter
+                {
+                    SortBy = CommitSortStrategies.Time | CommitSortStrategies.Reverse,
+                };
+                var commits = Git.Commits.QueryBy(filter);
+                var filteredCommitLog = commits.Where(c => c.Committer.When > fromdt && c.Committer.When < todt);
+                foreach (Commit commit in filteredCommitLog)
+                {
+                    Console.WriteLine("{0} : {1}", commit.Committer.When.ToLocalTime(), commit.MessageShort);
+                }
+
                 // No of commits
                 foreach (var Commit in Git.Commits)
                 {
@@ -103,8 +116,10 @@ namespace ConsoleGIT
                            
 
                         }
+                      
                         
                     }
+
                 }
             }
             
