@@ -35,7 +35,8 @@ namespace ConsoleGIT
             {
                 using (var repo = new Repository(RepoPath))
                 {
-                    // Fetch
+                    // jUst check out
+                    // // Fetch 
                     //  foreach (Remote remote in repo.Network.Remotes)
                     // {
                     //    FetchOptions options = new FetchOptions();
