@@ -51,18 +51,7 @@ namespace ConsoleGIT
                     //}
 
                     // Pull
-                    repo.Network.Pull(sig, new PullOptions()
-                    {
-                        FetchOptions = new FetchOptions()
-                        {
-                            CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials
-                            {
-                                Username = un,
-                                Password = pwd,
-                            }
-                        },
-                        MergeOptions = new MergeOptions()
-                    });
+                    repo.Network.Pull(sig, new PullOptions(){ FetchOptions = new FetchOptions(){ CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials{ Username = un, Password = pwd, }}, MergeOptions = new MergeOptions() });
                 }
             }
             else
